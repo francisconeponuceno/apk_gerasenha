@@ -1,4 +1,7 @@
 import flet as ft
+import string
+import random
+
 
 def main(page: ft.Page):
     page.theme_mode = ft.ThemeMode.DARK
@@ -12,6 +15,33 @@ def main(page: ft.Page):
             background="#111929"
         )
     )
+
+    options = {}
+    generate_button = ft.Ref[ft.Container]()
+    text_password = ft.Ref[ft.Text]()
+    characteres_count = ft.Ref[ft.Slider]()
+    btn_clipboard = ft.Ref[ft.IconButton]()
+
+
+    def generate_password(e):
+        pwd = ''
+
+        if options.get('uppercase'):
+            ...
+
+    def toggle_option(e):
+        nonlocal options
+        options.update({e.control.data: e.control.value})
+        
+        if any(options.values()):
+            generate_button.current.disabled = False
+            generate_button.current.opacity = 1
+
+        else:
+            generate_button.current.disabled = True
+            generate_button.current.opacity = 0.3
+
+        generate_button.current.update()    
 
     layout = ft.Container (
         expand=True,
@@ -39,11 +69,13 @@ def main(page: ft.Page):
                         alignment=ft.MainAxisAlignment.SPACE_BETWEEN,
                         controls=[
                             ft.Text(
+                                ref=text_password,
                                 selectable=True,
                                 size=20,
                                 height=40,
                             ),
                             ft.IconButton(
+                                ref=btn_clipboard,
                                 icon=ft.Icons.COPY,
                                 icon_color=ft.Colors.WHITE30,
                                 selected_icon=ft.Icons.CHECK,
@@ -61,6 +93,7 @@ def main(page: ft.Page):
                     bgcolor=ft.Colors.with_opacity(0.3, ft.Colors.BLACK),
                     border_radius=ft.border_radius.all(5),
                     content=ft.Slider(
+                        ref=characteres_count,
                         value=10,
                         min=4,
                         max=20,
@@ -78,8 +111,68 @@ def main(page: ft.Page):
                         size=20,
                     ),
                     trailing=ft.Switch(
-                        active_color=ft.colors.INDIGO,
-                    )
+                        adaptive=True,
+                        active_color=ft.Colors.INDIGO,
+                        data='uppercase',
+                        on_change=toggle_option,
+                    ),
+                    toggle_inputs=True,
+                ),
+                ft.ListTile(
+                    title=ft.Text(
+                        value='Letras minúsculas',
+                        size=20,
+                    ),
+                    trailing=ft.Switch(
+                        adaptive=True,
+                        active_color=ft.Colors.INDIGO,
+                        data='lowercase',
+                        on_change=toggle_option,
+                    ),
+                    toggle_inputs=True,
+                ),
+                ft.ListTile(
+                    title=ft.Text(
+                        value='Incluír números',
+                        size=20,
+                    ),
+                    trailing=ft.Switch(
+                        adaptive=True,
+                        active_color=ft.Colors.INDIGO,
+                        data='digits',
+                        on_change=toggle_option,
+                    ),
+                    toggle_inputs=True,
+                ),
+                ft.ListTile(
+                    title=ft.Text(
+                        value='Incluír símbolos',
+                        size=20,
+                    ),
+                    trailing=ft.Switch(
+                        adaptive=True,
+                        active_color=ft.Colors.INDIGO,
+                        data='punctuation',
+                        on_change=toggle_option,
+                    ),
+                    toggle_inputs=True,
+                ),
+                ft.Container(
+                    ref=generate_button,
+                    gradient=ft.LinearGradient(
+                        colors=[ft.Colors.INDIGO_900, ft.Colors.INDIGO_600]
+                    ),
+                    alignment=ft.alignment.center,
+                    padding=ft.padding.all(15),
+                    border_radius=ft.border_radius.all(5),
+                    content=ft.Text(
+                        value='GERAR SENHA',
+                        weight=ft.FontWeight.BOLD,
+                    ),
+                    on_click=generate_password,
+                    disabled=True,
+                    opacity=0.3,
+                    animate_opacity=ft.Animation(duration=700, curve=ft.AnimationCurve.DECELERATE),
                 )
             ]
         )
