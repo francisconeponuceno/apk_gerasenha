@@ -7,9 +7,9 @@ def main(page: ft.Page):
     page.padding = 0
     page.theme = ft.Theme(
         color_scheme=ft.ColorScheme(
-            primary='#192233',
+            primary="#1E3257",
             on_primary='#ffffff',
-            background='#0d121c'
+            background="#111929"
         )
     )
 
@@ -65,6 +65,20 @@ def main(page: ft.Page):
                         min=4,
                         max=20,
                         divisions=10,
+                        label="{value}"
+                    )
+                ),
+                ft.Text(
+                    value='PREFERÊNCIAS',
+                    weight=ft.FontWeight.BOLD,
+                ),
+                ft.ListTile(
+                    title=ft.Text(
+                        value='Letras maiúsculas',
+                        size=20,
+                    ),
+                    trailing=ft.Switch(
+                        active_color=ft.colors.INDIGO,
                     )
                 )
             ]
