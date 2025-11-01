@@ -6,8 +6,11 @@ import random
 def main(page: ft.Page):
     page.theme_mode = ft.ThemeMode.DARK
     page.window.width = 400
+    page.window.min_width = 400
     page.window.height = 700
+    page.window.min_height = 700
     page.padding = 0
+    page.window.title_bar_hidden = True
     page.theme = ft.Theme(
         color_scheme=ft.ColorScheme(
             primary="#1E3257",
@@ -22,12 +25,33 @@ def main(page: ft.Page):
     characteres_count = ft.Ref[ft.Slider]()
     btn_clipboard = ft.Ref[ft.IconButton]()
 
+    def copy_to_clipboard(e):
+        pwd = text_password.current.value
+
+        if pwd:
+            page.set_clipboard(pwd)
+            btn_clipboard.current.selected = True
+            btn_clipboard.current.update()
+
 
     def generate_password(e):
         pwd = ''
 
         if options.get('uppercase'):
-            ...
+            pwd += string.ascii_uppercase
+        if options.get('lowercase'):
+            pwd += string.ascii_lowercase
+        if options.get('digits'):
+            pwd += string.digits
+        if options.get('punctuation'):
+            pwd += string.punctuation
+
+        count = int(characteres_count.current.value)
+        passwird = random.choices(pwd, k=count)
+        text_password.current.value = ''.join(passwird)
+        text_password.current.update()
+        btn_clipboard.current.selected = False
+        btn_clipboard.current.update()
 
     def toggle_option(e):
         nonlocal options
@@ -52,6 +76,7 @@ def main(page: ft.Page):
             colors=[ft.Colors.PRIMARY, ft.Colors.BLACK38]
         ),
         content=ft.Column(
+            scroll=ft.ScrollMode.HIDDEN,
             horizontal_alignment=ft.CrossAxisAlignment.STRETCH,
             controls=[
                 ft.Text(
@@ -81,6 +106,7 @@ def main(page: ft.Page):
                                 selected_icon=ft.Icons.CHECK,
                                 selected_icon_color=ft.Colors.INDIGO,
                                 selected=False,
+                                on_click=copy_to_clipboard,
                             )
                         ]
                     )
